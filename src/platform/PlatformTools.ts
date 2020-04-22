@@ -203,7 +203,7 @@ export class PlatformTools {
      * Highlights sql string to be print in the console.
      */
     static highlightSql(sql: string) {
-        const theme: Theme = {
+        const theme = {
             "keyword": chalk.blueBright,
             "literal": chalk.blueBright,
             "string": chalk.white,
@@ -211,14 +211,30 @@ export class PlatformTools {
             "built_in": chalk.magentaBright,
             "comment": chalk.gray,
         };
-        return highlight(sql, { theme: theme, language: "sql" });
+        try {
+            return require('cli-highlight').highlight(sql, { theme: theme, language: "sql" })
+        } catch (e) {
+            if (e instanceof Error && e.message.indexOf("Cannot find module")) {
+                return sql;
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
      * Highlights json string to be print in the console.
      */
     static highlightJson(json: string) {
-        return highlight(json, { language: "json" });
+        try {
+            return require('cli-highlight').highlight(json, { language: "json" })
+        } catch (e) {
+            if (e instanceof Error && e.message.indexOf("Cannot find module")) {
+                return json;
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
